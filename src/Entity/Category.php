@@ -25,7 +25,7 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $slug;
+    private $country;
 
     public function getId(): ?int
     {
@@ -44,14 +44,14 @@ class Category
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getCountry(): ?string
     {
-        return $this->slug;
+        return $this->country;
     }
 
-    public function setSlug(string $slug): self
+    public function setCountry(string $country): self
     {
-        $this->slug = $slug;
+        $this->country = $country;
 
         return $this;
     }
