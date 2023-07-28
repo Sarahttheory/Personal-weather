@@ -7,4 +7,5 @@ return [
     Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
     Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle::class => ['all' => true],
+    Pyrrah\OpenWeatherMapBundle\PyrrahOpenWeatherMapBundle::class => ['all' => true],
 ];
