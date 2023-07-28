@@ -5,10 +5,11 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/category")
@@ -23,6 +24,50 @@ class CategoryController extends AbstractController
         return $this->render('category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
         ]);
+    }
+
+    /**
+     * @Route("/export", name="app_category_export", methods={"GET"})
+     */
+    public function export(CategoryRepository $categoryRepository): Response
+    {
+        $categories = $categoryRepository->findAll();
+
+        // Создаем новый объект Spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Записываем заголовки столбцов
+        $sheet->setCellValue('A1', 'id');
+        $sheet->setCellValue('B1', 'name');
+        $sheet->setCellValue('C1', 'country');
+
+        // Записываем данные категорий
+        $row = 2;
+        foreach ($categories as $category) {
+            $sheet->setCellValue('A' . $row, $category->getId());
+            $sheet->setCellValue('B' . $row, $category->getName());
+            $sheet->setCellValue('C' . $row, $category->getCountry());
+
+            $row++;
+        }
+
+        // Сохраняем файл
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'categories.xlsx';
+        $tempFilePath = sys_get_temp_dir() . '/' . $fileName;
+        $writer->save($tempFilePath);
+
+        // Создаем объект Response с заголовками для скачивания файла
+        $response = new Response(file_get_contents($tempFilePath));
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        // Удаляем временный файл
+        unlink($tempFilePath);
+
+        return $response;
     }
 
     /**
@@ -48,6 +93,7 @@ class CategoryController extends AbstractController
 
     /**
      * @Route("/{id}", name="app_category_show", methods={"GET"})
+     * @ParamConverter("Сategory", class="App\Entity\Category")
      */
     public function show(Category $category): Response
     {
