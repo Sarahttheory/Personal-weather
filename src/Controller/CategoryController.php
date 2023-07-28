@@ -10,6 +10,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/category")
@@ -28,6 +30,7 @@ class CategoryController extends AbstractController
 
     /**
      * @Route("/export", name="app_category_export", methods={"GET"})
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function export(CategoryRepository $categoryRepository): Response
     {
