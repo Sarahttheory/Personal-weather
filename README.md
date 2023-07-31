@@ -5,17 +5,18 @@
 ## Требования
 Перед началом работы убедитесь, что у вас установлены следующие компоненты:
 
-- PHP версии 7.2 или выше
-- Composer
-- MySQL сервер
+- PHP 7.4 или выше.
+- Composer.
+- MySQL или MariaDB.
+- Веб-сервер (например, Apache или Nginx).
 
 ## Установка
-- Склонируйте репозиторий на свой локальный компьютер:
+- Склонируйте репозиторий:
 
-`git clone https://github.com/example/repository.git`
+`git clone https://github.com/Sarahttheory/personal-weather`
 - Перейдите в директорию проекта:
 
-`cd repository`
+`cd personal-weather`
 
 - Установите зависимости, запустив команду:
  
@@ -45,13 +46,3 @@ CREATE TABLE `Category` (
 http://personal-weather/public/index.php/category/
 
 На этой странице вы можете просмотреть список всех пользователей, добавить нового пользователя, отредактировать или удалить существующего.
-
-## Зависимости
-
-- Symfony 5.x
-- Doctrine ORM
-- PhpSpreadsheet
-- Pyrrah OpenWeatherMapBundle
-
-### Заметки
-- Некоторые функции, такие как вывод погоды, еще не реализованы и требуют разработки.
