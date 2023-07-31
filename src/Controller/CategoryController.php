@@ -13,6 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Pyrrah\OpenWeatherMapBundle\Services\Client;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Pyrrah\OpenWeatherMapBundle\Services\ClientInterface;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+
 
 /**
  * @Route("/category")
@@ -99,12 +107,50 @@ class CategoryController extends AbstractController
      * @Route("/{id}", name="app_category_show", methods={"GET"})
      * @ParamConverter("Сategory", class="App\Entity\Category")
      */
-    public function show(Category $category): Response
+    public function show(Category $category, AdapterInterface $customCache, HttpClientInterface $httpClient): Response
     {
+        // Название города из объекта категории
+        $city = $category->getCountry();
+
+        // Проверка, есть ли закешированный ответ о погоде для данного города
+        $cacheKey = 'weather_' . $city;
+        $cachedResponse = $customCache->getItem($cacheKey);
+        if (!$cachedResponse->isHit()) {
+            try {
+                // Запрос к API погоды с помощью Symfony HttpClient
+                $apiKey = '32ba9bc73702fda7186e07fd974186c5';
+                $response = $httpClient->request('GET', 'http://api.openweathermap.org/data/2.5/weather', [
+                    'query' => [
+                        'q' => $city,
+                        'appid' => $apiKey,
+                    ],
+                ]);
+
+                $statusCode = $response->getStatusCode();
+                if ($statusCode !== 200) {
+                    throw new HttpException($statusCode, 'Не удалось получить данные о погоде');
+                }
+
+                $weatherResponse = $response->toArray();
+            } catch (\Exception $e) {
+                $weatherResponse = null;
+            }
+
+            // Сохранить ответ API в кэше на 1 час
+            $cachedResponse->set($weatherResponse);
+            $cachedResponse->expiresAfter(3600);
+            $customCache->save($cachedResponse);
+        } else {
+            // Если ответ закеширован, используем закешированные данные
+            $weatherResponse = $cachedResponse->get();
+        }
+
         return $this->render('category/show.html.twig', [
             'category' => $category,
+            'weather' => $weatherResponse, // Передаем данные о погоде в шаблон
         ]);
     }
+
 
     /**
      * @Route("/{id}/edit", name="app_category_edit", methods={"GET", "POST"})

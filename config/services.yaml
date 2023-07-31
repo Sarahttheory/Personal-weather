@@ -22,3 +22,6 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Register the Pyrrah\OpenWeatherMapBundle\Services\Client service
+    Pyrrah\OpenWeatherMapBundle\Services\Client: '@pyrrah.openweathermap.client'
