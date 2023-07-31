@@ -13,20 +13,28 @@
 ## Установка
 - Склонируйте репозиторий:
 
-`git clone https://github.com/Sarahttheory/personal-weather`
+```
+git clone https://github.com/Sarahttheory/personal-weather
+```
 - Перейдите в директорию проекта:
 
-`cd personal-weather`
+```
+cd personal-weather
+```
 
 - Установите зависимости, запустив команду:
  
-`composer install`
+```
+composer install
+```
 
 - Создайте базу данных и настройте подключение к ней в файле .env.
 
 - Выполните миграции, чтобы создать необходимые таблицы в базе данных:
 
-`php bin/console doctrine:migrations:migrate`
+```
+php bin/console doctrine:migrations:migrate
+```
 <details>
 <summary>если не получилось</summary>
 CREATE TABLE `Category` (
