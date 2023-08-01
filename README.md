@@ -37,7 +37,7 @@ php bin/console doctrine:migrations:migrate
 ```
 <details>
 <summary>если не получилось</summary>
-CREATE TABLE `Category` (
+CREATE TABLE `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `country` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
